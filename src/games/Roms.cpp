@@ -47,6 +47,7 @@
 #include "supported/JamesBond.hpp"
 #include "supported/JourneyEscape.hpp"
 #include "supported/Kangaroo.hpp"
+#include "supported/Kaboom.hpp"
 #include "supported/Krull.hpp"
 #include "supported/KungFuMaster.hpp"
 #include "supported/MontezumaRevenge.hpp"
@@ -112,6 +113,7 @@ static const RomSettings *roms[]  = {
     new IceHockeySettings(),
     new JamesBondSettings(),
     new JourneyEscapeSettings(),
+    new KaboomSettings(),
     new KangarooSettings(),
     new KrullSettings(),
     new KungFuMasterSettings(),

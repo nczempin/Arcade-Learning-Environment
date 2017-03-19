@@ -36,6 +36,7 @@ MODULE_OBJS := \
 	src/games/supported/IceHockey.o \
 	src/games/supported/JamesBond.o \
 	src/games/supported/JourneyEscape.o \
+	src/games/supported/Kaboom.o
 	src/games/supported/Kangaroo.o \
 	src/games/supported/Krull.o \
 	src/games/supported/KungFuMaster.o \
