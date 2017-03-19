@@ -60,10 +60,16 @@ bool KaboomSettings::isMinimal(const Action &a) const {
 
     switch (a) {
         case PLAYER_A_NOOP:
+<<<<<<< e1f3bda2235f1098aa7e3e5cf1e80b8158d6ad79
         case PLAYER_A_FIRE:
         case PLAYER_A_RIGHT:
         case PLAYER_A_LEFT:
              return true;
+=======
+        case PLAYER_A_RIGHT:
+        case PLAYER_A_LEFT:
+            return true;
+>>>>>>> Add Kaboom! rom
         default:
             return false;
     }   
