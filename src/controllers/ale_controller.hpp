@@ -23,6 +23,8 @@
 #include "../environment/stella_environment.hpp"
 
 class ALEController {
+  const Properties properties;
+
   public:
     ALEController(OSystem * osystem);
     virtual ~ALEController() {}

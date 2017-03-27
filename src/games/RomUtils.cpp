@@ -27,6 +27,14 @@ int readRam(const System* system, int offset) {
 
 	return sys->peek((offset & 0x7F) + 0x80);
 }
+/* turns a two-digit binary coded decimal into an int */
+//TODO this only works with bytes, so technically we should use a byte-sized parameter
+int bcd_to_decimal(int digits_val) {
+	int right_digit = digits_val & 15;
+	int left_digit = (digits_val - right_digit) >> 4;
+	int score = (10 * left_digit) + right_digit;
+	return score;
+}
 
 /* extracts a decimal value from a byte */
 int getDecimalScore(int index, const System* system) {
@@ -37,14 +45,6 @@ int getDecimalScore(int index, const System* system) {
 	return score;
 }
 
-/* turns a two-digit binary coded decimal into an int */
-//TODO this only works with bytes, so technically we should use a byte-sized parameter
-int bcd_to_decimal(int digits_val) {
-	int right_digit = digits_val & 15;
-	int left_digit = (digits_val - right_digit) >> 4;
-	int score = (10 * left_digit) + right_digit;
-	return score;
-}
 
 /* extracts a decimal value from 2 bytes */
 int getDecimalScore(int lower_index, int higher_index, const System* system) {

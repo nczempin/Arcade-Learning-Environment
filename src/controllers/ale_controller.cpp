@@ -17,58 +17,63 @@
  **************************************************************************** */
 
 #include "ale_controller.hpp"
-#include "../games/Roms.hpp"
 
+#include <cstdlib>
+#include <iostream>
+#include <memory>
+
+#include "../common/Constants.h"
 #include "../common/display_screen.h"
 #include "../common/Log.hpp"
+#include "../emucore/Settings.hxx"
+#include "../games/Roms.hpp"
 
-ALEController::ALEController(OSystem* osystem):
-  m_osystem(osystem),
-  m_settings(buildRomRLWrapper(m_osystem->settings().getString("rom_file"))),
-  m_environment(m_osystem, m_settings.get()) {
+ALEController::ALEController(OSystem* osystem) :
+		m_osystem(osystem), m_settings(
+				buildRomRLWrapper(m_osystem->settings().getString("rom_file"))), m_environment(
+				m_osystem, m_settings.get()) {
 
-  if (m_settings.get() == NULL) {
-    ale::Logger::Warning << "Unsupported ROM file: " << std::endl;
-    exit(1);
-  }
-  else {
-    m_environment.reset();
-  }
+	if (m_settings.get() == NULL) {
+		ale::Logger::Warning << "Unsupported ROM file: " << std::endl;
+		exit(1);
+	} else {
+		m_environment.reset();
+	}
 }
 
 void ALEController::display() {
-  // Display the screen if applicable
-  DisplayScreen* display = m_osystem->p_display_screen;
-  if (display) {
-    display->display_screen();
-    while (display->manual_control_engaged()) {
-      Action user_action = display->getUserAction();
-      applyActions(user_action, PLAYER_B_NOOP);
-      display->display_screen();
-    }
-  }
+	// Display the screen if applicable
+	DisplayScreen* display = m_osystem->p_display_screen;
+	if (display) {
+		display->display_screen();
+		while (display->manual_control_engaged()) {
+			Action user_action = display->getUserAction();
+			applyActions(user_action, PLAYER_B_NOOP);
+			display->display_screen();
+		}
+	}
 }
 
 reward_t ALEController::applyActions(Action player_a, Action player_b) {
-  reward_t sum_rewards = 0;
-  // Perform different operations based on the first player's action 
-  switch (player_a) {
-    case LOAD_STATE: // Load system state
-      // Note - this does not reset the game screen; so that the subsequent screen
-      //  is incorrect (in fact, two screens, due to colour averaging)
-      m_environment.load();
-      break;
-    case SAVE_STATE: // Save system state
-      m_environment.save();
-      break;
-    case SYSTEM_RESET:
-      m_environment.reset();
-      break;
-    default:
-      // Pass action to emulator!
-      sum_rewards = m_environment.act(player_a, player_b);
-      break;
-  }
-  return sum_rewards;
+	reward_t sum_rewards = 0;
+	// Perform different operations based on the first player's action
+	switch (player_a) {
+	case LOAD_STATE: // Load system state
+		// Note - this does not reset the game screen; so that the subsequent screen
+		//  is incorrect (in fact, two screens, due to colour averaging)
+		m_environment.load();
+		break;
+	case SAVE_STATE: // Save system state
+		m_environment.save();
+		break;
+	case SYSTEM_RESET:
+		m_environment.reset();
+		break;
+	default:
+		// Pass action to emulator!
+		sum_rewards = m_environment.act(player_a, player_b);
+		break;
+	}
+	return sum_rewards;
 }
 

@@ -45,7 +45,7 @@ void KaboomSettings::step(const System& system) {
 /* is end of game */
 bool KaboomSettings::isTerminal() const {
 
-    return m_terminal;
+    return false; //m_terminal;
 };
 
 
