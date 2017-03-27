@@ -14,7 +14,6 @@ if len(sys.argv) < 2:
   sys.exit()
 
 ale = ALEInterface()
-print("1")
 # Get & Set the desired settings
 ale.setInt(b'random_seed', 123)
 
@@ -34,9 +33,7 @@ if USE_SDL:
 
 # Load the ROM file
 rom_file = str.encode(sys.argv[1])
-print("2")
 ale.loadROM(rom_file)
-print("3")
 # Get the list of legal actions
 legal_actions = ale.getLegalActionSet()
 
@@ -55,7 +52,7 @@ for i in range(ram_size):
 
 total_reward = 0
 #while not ale.game_over():
-for i in range(200):
+for i in range(500):
     a = legal_actions[randrange(len(legal_actions))]
     # Apply an action and get the resulting reward
     reward = ale.act(a);
