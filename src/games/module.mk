@@ -79,6 +79,7 @@ MODULE_OBJS := \
 	src/games/supported/WizardOfWor.o \
 	src/games/supported/YarsRevenge.o \
 	src/games/supported/Zaxxon.o \
+	src/games/supported/Unknown.o \
 
 MODULE_DIRS += \
 	src/games

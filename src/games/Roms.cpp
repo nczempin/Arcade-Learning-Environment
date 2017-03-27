@@ -90,6 +90,7 @@
 #include "supported/YarsRevenge.hpp"
 #include "supported/Zaxxon.hpp"
 
+#include "supported/Unknown.hpp"
 
 /* list of supported games */
 static const RomSettings *roms[]  = {
@@ -168,6 +169,9 @@ static const RomSettings *roms[]  = {
     new WizardOfWorSettings(),
     new YarsRevengeSettings(),
     new ZaxxonSettings(),
+//
+    new UnknownSettings(),
+
 };
 
 

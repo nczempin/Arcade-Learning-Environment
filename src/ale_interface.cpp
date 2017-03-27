@@ -151,7 +151,7 @@ void ALEInterface::loadROM(string rom_file = "") {
     const Properties properties = theOSystem->console().properties();
     const std::__cxx11::string name = properties.get(Cartridge_Name);
     Logger::Info << "Cartridge_name: " << name << std::endl;
-    std::string s = "Kaboom!";
+    std::string s = "Unknown";
     std::string s1 = s.substr(0, s.find("("));
     //string rom_name[256];
     s1.erase(std::remove_if(s1.begin(), s1.end(),is_illegal), s1.end());
