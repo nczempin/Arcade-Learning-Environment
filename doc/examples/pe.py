@@ -41,7 +41,6 @@ print("3")
 legal_actions = ale.getLegalActionSet()
 
 ram_size = ale.getRAMSize()
-# Play 10 episodes
 ignore = 0
 directions = []
 previous_ram = np.zeros(ram_size, dtype=np.uint8)  # np.array(ram_size, dtype=np.uint8)
@@ -49,13 +48,14 @@ current_ram = np.zeros(ram_size, dtype=np.uint8)
 ale.getRAM(previous_ram)
 for i in range(ram_size):
     if (previous_ram.item(i)>0):
-        print ("ignoring: ", i)
+        #print ("ignoring: ", i)
         directions.append(0)
     else:
          directions.append(None)
 
 total_reward = 0
-while not ale.game_over():
+#while not ale.game_over():
+for i in range(200):
     a = legal_actions[randrange(len(legal_actions))]
     # Apply an action and get the resulting reward
     reward = ale.act(a);
@@ -70,16 +70,16 @@ while not ale.game_over():
                 if d == None:
                     if (cr > pr):
                         directions[i] = 1
-                        print (hex(i), ": ", hex(pr),"=",pr, "->", hex(cr),"=",cr)
+                        #print (hex(i), ": ", hex(pr),"=",pr, "->", hex(cr),"=",cr)
                     elif (cr < pr):
                         directions[i] = -1
                 elif (d == 1):
                     if (cr < pr):
-                        if (i >0 and (directions[i-1]==1 or directions[i-1]==None)):
-                            print ("juicy: ", hex(i), "=", i)
+                        #if (i >0 and (directions[i-1]==1 or directions[i-1]==None)):
+                            #print ("juicy: ", hex(i), "=", i)
                         directions[i] = 0
-                    elif (cr > pr):
-                        print (hex(i), ": ", hex(pr),"=",pr, "->", hex(cr),"=",cr)
+                    #elif (cr > pr):
+                        #print (hex(i), ": ", hex(pr),"=",pr, "->", hex(cr),"=",cr)
                 elif (d == -1):
                     if (cr > pr):
                         directions[i] = 0
