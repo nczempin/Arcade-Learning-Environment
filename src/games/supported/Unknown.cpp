@@ -30,21 +30,14 @@ RomSettings* UnknownSettings::clone() const {
 
 /* process the latest information from ALE */
 void UnknownSettings::step(const System& system) {
-
-    // update the reward
-    m_reward = 1;
-    ++m_score;
-
-    // update terminal status
-    int lives = readRam(&system, 0xA1);
-    m_terminal = lives == 0x0 || m_score > 999991;
+  // in the most basic form, we don't reward for anything
 }
 
 
 /* is end of game */
 bool UnknownSettings::isTerminal() const {
-
-    return false; //m_terminal;
+  //we don't know when it finishes
+    return false;
 };
 
 
