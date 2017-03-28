@@ -82,7 +82,7 @@ while not ale.game_over():
                                     print (hex(j), ": ", hex(ppr),"=",ppr, "->", hex(ccr),"=",ccr)
                         #print (hex(i), ": ", hex(pr),"=",pr, "->", hex(cr),"=",cr)
 
-                        print("==============================")
+#                        print("==============================")
                     elif (cr < pr):
                         directions[i] = -1
                 elif (d == 1):
@@ -115,7 +115,9 @@ while not ale.game_over():
 #     print (previous_ram.item(0), ", ", previous_ram.item(1), ", ", hex(previous_ram.item(2)))
 #     print (current_ram.item(0), ", ", current_ram.item(1), ", ", hex(current_ram.item(2)))
     previous_ram = current_ram.copy()
-                     
+                             
     total_reward += reward
+    if (reward > 0):
+        print ("reward ", reward, "->" , total_reward);
 #print('Episode %d ended with score: %d' % (episode, total_reward))
 ale.reset_game()

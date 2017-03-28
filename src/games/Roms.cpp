@@ -9,11 +9,15 @@
  *
  * *****************************************************************************
  */
-#include "Roms.hpp"
-#include "RomSettings.hpp"
-#include "RomUtils.hpp"
 
-// include the game implementations
+#include "Roms.hpp"
+#include "../common/Log.hpp"
+
+#include <stddef.h>
+#include <algorithm>
+#include <cctype>
+#include <iterator>
+
 #include "supported/AirRaid.hpp"
 #include "supported/Alien.hpp"
 #include "supported/Amidar.hpp"
@@ -51,9 +55,9 @@
 #include "supported/JourneyEscape.hpp"
 #include "supported/Kaboom.hpp"
 #include "supported/Kangaroo.hpp"
-#include "supported/Koolaid.hpp"
 #include "supported/KeystoneKapers.hpp"
 #include "supported/Kingkong.hpp"
+#include "supported/Koolaid.hpp"
 #include "supported/Krull.hpp"
 #include "supported/KungFuMaster.hpp"
 #include "supported/LaserGates.hpp"
@@ -62,6 +66,7 @@
 #include "supported/MrDo.hpp"
 #include "supported/MsPacman.hpp"
 #include "supported/NameThisGame.hpp"
+#include "supported/OnlyScore.hpp"
 #include "supported/Phoenix.hpp"
 #include "supported/Pitfall.hpp"
 #include "supported/Pong.hpp"
@@ -80,17 +85,16 @@
 #include "supported/Tennis.hpp"
 #include "supported/Tetris.hpp"
 #include "supported/TimePilot.hpp"
-#include "supported/Turmoil.hpp"
 #include "supported/Trondead.hpp"
+#include "supported/Turmoil.hpp"
 #include "supported/Tutankham.hpp"
+#include "supported/Unknown.hpp"
 #include "supported/UpNDown.hpp"
 #include "supported/Venture.hpp"
 #include "supported/VideoPinball.hpp"
 #include "supported/WizardOfWor.hpp"
 #include "supported/YarsRevenge.hpp"
 #include "supported/Zaxxon.hpp"
-
-#include "supported/Unknown.hpp"
 
 /* list of supported games */
 static const RomSettings *roms[]  = {
@@ -187,7 +191,12 @@ RomSettings *buildRomRLWrapper(const std::string &rom) {
     for (size_t i=0; i < sizeof(roms)/sizeof(roms[0]); i++) {
         if (rom_str == roms[i]->rom()) return roms[i]->clone();
     }
+    ale::Logger::Info << "looking for... '" << rom << "'\n";
 
+    //TODO: this needs to be generalized, obviously
+    if (rom.find("Missile Command") != std::string::npos){
+      return new OnlyScoreSettings(0x6f, 0x71, 0x73);
+    }
     return NULL;
 }
 

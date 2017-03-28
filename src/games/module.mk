@@ -80,6 +80,7 @@ MODULE_OBJS := \
 	src/games/supported/YarsRevenge.o \
 	src/games/supported/Zaxxon.o \
 	src/games/supported/Unknown.o \
+	src/games/supported/OnlyScore.o \
 
 MODULE_DIRS += \
 	src/games
