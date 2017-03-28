@@ -43,16 +43,22 @@ directions = []
 previous_ram = np.zeros(ram_size, dtype=np.uint8)  # np.array(ram_size, dtype=np.uint8)
 current_ram = np.zeros(ram_size, dtype=np.uint8)
 ale.getRAM(previous_ram)
+candidates = [0x73, 0x71,  0x6f]
 for i in range(ram_size):
-    if (previous_ram.item(i)>0):
+    if (previous_ram.item(i)!=0):
         #print ("ignoring: ", i)
         directions.append(0)
     else:
-         directions.append(None)
+        directions.append(None)
+#        if (i>1 and previous_ram.item(i-1)==0):
+#            candidates.append(i)
+        
+
+#candidates= [0x6f,0x70,0x71, 0x6e, 0x6d]
 
 total_reward = 0
-#while not ale.game_over():
-for i in range(500):
+while not ale.game_over():
+#for i in range(500):
     a = legal_actions[randrange(len(legal_actions))]
     # Apply an action and get the resulting reward
     reward = ale.act(a);
@@ -64,17 +70,29 @@ for i in range(500):
             if (d != 0):
                 pr = previous_ram.item(i)
                 cr = current_ram.item(i)
-                if d == None:
+                diff = cr - pr
+                if (d == None or d == 1):
                     if (cr > pr):
                         directions[i] = 1
+                        if (i in candidates):
+                            for j in candidates:
+                                ppr = previous_ram.item(j)
+                                ccr = current_ram.item(j)
+                                if (i >0 and i < 0x80):
+                                    print (hex(j), ": ", hex(ppr),"=",ppr, "->", hex(ccr),"=",ccr)
                         #print (hex(i), ": ", hex(pr),"=",pr, "->", hex(cr),"=",cr)
+
+                        print("==============================")
                     elif (cr < pr):
                         directions[i] = -1
                 elif (d == 1):
                     if (cr < pr):
-                        #if (i >0 and (directions[i-1]==1 or directions[i-1]==None)):
+                        if (i >0 and (directions[i-1]==1 or directions[i-1]==None)):
                             #print ("juicy: ", hex(i), "=", i)
-                        directions[i] = 0
+#                            if (i==candidate):
+#                                print ("candy!!")
+#                        else:
+                            directions[i] = 0
                     #elif (cr > pr):
                         #print (hex(i), ": ", hex(pr),"=",pr, "->", hex(cr),"=",cr)
                 elif (d == -1):
