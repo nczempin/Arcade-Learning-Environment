@@ -17,20 +17,6 @@ ale = ALEInterface()
 # Get & Set the desired settings
 ale.setInt(b'random_seed', 123)
 
-# Set USE_SDL to true to display the screen. ALE must be compilied
-# with SDL enabled for this to work. On OSX, pygame init is used to
-# proxy-call SDL_main.
-# USE_SDL = distutils.util.strtobool(os.environ["USE_SDL"])
-USE_SDL = False
-if USE_SDL:
-  if sys.platform == 'darwin':
-    import pygame
-    pygame.init()
-    ale.setBool('sound', False)  # Sound doesn't work on OSX
-  elif sys.platform.startswith('linux'):
-    ale.setBool(None, "j")  # True)  #3,"sound")#, 23)#True)
-  ale.setBool('display_screen', True)
-
 # Load the ROM file
 rom_file = str.encode(sys.argv[1])
 ale.loadROM(rom_file)
@@ -43,7 +29,14 @@ directions = []
 previous_ram = np.zeros(ram_size, dtype=np.uint8)  # np.array(ram_size, dtype=np.uint8)
 current_ram = np.zeros(ram_size, dtype=np.uint8)
 ale.getRAM(previous_ram)
-candidates = [0x6c, 0x7a]
+score_candidates = []
+for i in range(len(score_candidates)):
+    score_candidates[i] = score_candidates[i] & 0x7f
+
+lives_start = 3
+lives_candidates = [0x60]
+for i in range(len(lives_candidates)):
+    lives_candidates[i] = lives_candidates[i] & 0x7f
 for i in range(ram_size):
     if (previous_ram.item(i)!=0):
         #print ("ignoring: ", i)
@@ -66,6 +59,12 @@ while not ale.game_over():
         #print (current_ram.item(2))
         for i in range(ram_size):
             d = directions[i]
+            pr = previous_ram.item(i)
+            cr = current_ram.item(i)
+            diff = cr - pr
+
+            if ((i&0x7f) in lives_candidates):
+                print("***checklives: ",hex(i), ": ", hex(pr),"=",pr, "->", hex(cr),"=",cr, "  d=", d)
             if (d != 0):
                 pr = previous_ram.item(i)
                 cr = current_ram.item(i)
@@ -73,9 +72,9 @@ while not ale.game_over():
                 if (d == None or d == 1):
                     if (cr > pr):
                         directions[i] = 1
-                        if (len(candidates) >0):
-                            if (i in candidates):
-                                for j in candidates:
+                        if (len(score_candidates) >0):
+                            if (i in score_candidates):
+                                for j in score_candidates:
                                     ppr = previous_ram.item(j)
                                     ccr = current_ram.item(j)
                                     if (i >0 and i < 0x80):
@@ -96,9 +95,12 @@ while not ale.game_over():
                             directions[i] = 0
                     #elif (cr > pr):
                         #print (hex(i), ": ", hex(pr),"=",pr, "->", hex(cr),"=",cr)
-                elif (d == -1):
-                    if (cr > pr):
-                        directions[i] = 0
+#            if (d == None or d == -1 ):
+            if ((lives_start == None or lives_start>=cr) and diff==-1 and ((len(lives_candidates)==0 and cr < 10)  or (i in lives_candidates))):
+                        #if (cr == 0):
+                print ("lives?", hex(i), ": ", hex(pr),"=",pr, "->", hex(cr),"=",cr)
+         #       elif (ignore == 0 and cr > pr+1):
+         #               directions[i] = 0
         count = 0
         for i in range(ram_size):
             d = directions[i]
