@@ -34,7 +34,7 @@ RomSettings* OnlyScoreSettings::clone() const {
 
 /* process the latest information from ALE */
 void OnlyScoreSettings::step(const System& system) {
-  reward_t score;
+  reward_t score = 0;
   if (m_n==3){
     score = getDecimalScore(m_low, m_mid, m_high, &system);
   } else if (m_n==2){

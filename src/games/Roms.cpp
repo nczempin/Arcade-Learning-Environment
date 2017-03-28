@@ -66,7 +66,6 @@
 #include "supported/MrDo.hpp"
 #include "supported/MsPacman.hpp"
 #include "supported/NameThisGame.hpp"
-#include "supported/OnlyScore.hpp"
 #include "supported/Phoenix.hpp"
 #include "supported/Pitfall.hpp"
 #include "supported/Pong.hpp"
@@ -88,13 +87,16 @@
 #include "supported/Trondead.hpp"
 #include "supported/Turmoil.hpp"
 #include "supported/Tutankham.hpp"
-#include "supported/Unknown.hpp"
 #include "supported/UpNDown.hpp"
 #include "supported/Venture.hpp"
 #include "supported/VideoPinball.hpp"
 #include "supported/WizardOfWor.hpp"
 #include "supported/YarsRevenge.hpp"
 #include "supported/Zaxxon.hpp"
+
+#include "supported/Unknown.hpp"
+#include "supported/OnlyScore.hpp"
+#include "supported/ScoreAndLives.hpp"
 
 /* list of supported games */
 static const RomSettings *roms[]  = {
@@ -198,7 +200,7 @@ RomSettings *buildRomRLWrapper(const std::string &rom) {
       return new OnlyScoreSettings(3, 0x6f, 0x71, 0x73);
     } else if (rom.find("Jawbreaker")!= std::string::npos){
       // TODO introduce multiplier (displayed Jawbreaker score is 10x what's in memory)
-      return new OnlyScoreSettings(2, 0x6c, 0x7a,0);
+      return new ScoreAndLivesSettings(2, 0x6c, 0x7a, 0, 0x60);
     } else if (rom.find("Cosmic Ark")!= std::string::npos){
        return new OnlyScoreSettings(3, 0x32, 0x30, 0x2e);
     }

@@ -81,6 +81,7 @@ MODULE_OBJS := \
 	src/games/supported/Zaxxon.o \
 	src/games/supported/Unknown.o \
 	src/games/supported/OnlyScore.o \
+	src/games/supported/ScoreAndLives.o \
 
 MODULE_DIRS += \
 	src/games
