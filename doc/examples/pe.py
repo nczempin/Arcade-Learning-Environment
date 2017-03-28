@@ -29,12 +29,12 @@ directions = []
 previous_ram = np.zeros(ram_size, dtype=np.uint8)  # np.array(ram_size, dtype=np.uint8)
 current_ram = np.zeros(ram_size, dtype=np.uint8)
 ale.getRAM(previous_ram)
-score_candidates = []
+score_candidates = [0xb9]
 for i in range(len(score_candidates)):
     score_candidates[i] = score_candidates[i] & 0x7f
 
 lives_start = 3
-lives_candidates = [0x60]
+lives_candidates = [0xe0]
 for i in range(len(lives_candidates)):
     lives_candidates[i] = lives_candidates[i] & 0x7f
 for i in range(ram_size):
@@ -62,6 +62,9 @@ while not ale.game_over():
             pr = previous_ram.item(i)
             cr = current_ram.item(i)
             diff = cr - pr
+            if ((i&0x7f) in score_candidates):
+                print("***check score: ",hex(i), ": ", hex(pr),"=",pr, "->", hex(cr),"=",cr, "  d=", d)
+
 
             if ((i&0x7f) in lives_candidates):
                 print("***checklives: ",hex(i), ": ", hex(pr),"=",pr, "->", hex(cr),"=",cr, "  d=", d)
@@ -74,6 +77,7 @@ while not ale.game_over():
                         directions[i] = 1
                         if (len(score_candidates) >0):
                             if (i in score_candidates):
+                                print (hex(i), ": ", hex(pr),"=",pr, "->", hex(cr),"=",cr)
                                 for j in score_candidates:
                                     ppr = previous_ram.item(j)
                                     ccr = current_ram.item(j)
