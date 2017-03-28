@@ -14,7 +14,8 @@
 #include "../RomUtils.hpp"
 #include <iostream>
 
-OnlyScoreSettings::OnlyScoreSettings(int low, int mid, int high) {
+OnlyScoreSettings::OnlyScoreSettings(int n, int low, int mid, int high) {
+    this->m_n = n;
     this->m_low = low;
     this->m_mid = mid;
     this->m_high = high;
@@ -25,7 +26,7 @@ OnlyScoreSettings::OnlyScoreSettings(int low, int mid, int high) {
 /* create a new instance of the rom */
 RomSettings* OnlyScoreSettings::clone() const {
     
-    RomSettings* rval = new OnlyScoreSettings(m_low, m_mid, m_high);
+    RomSettings* rval = new OnlyScoreSettings(m_n, m_low, m_mid, m_high);
     *rval = *this;
     return rval;
 }
@@ -33,7 +34,12 @@ RomSettings* OnlyScoreSettings::clone() const {
 
 /* process the latest information from ALE */
 void OnlyScoreSettings::step(const System& system) {
-  reward_t score = getDecimalScore(m_low, m_mid, m_high, &system);
+  reward_t score;
+  if (m_n==3){
+    score = getDecimalScore(m_low, m_mid, m_high, &system);
+  } else if (m_n==2){
+    score = getDecimalScore(m_low, m_mid, &system);
+  }
       m_reward = score - m_score;
       m_score = score;
 }

@@ -20,7 +20,7 @@ class OnlyScoreSettings: public RomSettings
 
 public:
 
-  OnlyScoreSettings(int low, int mid, int high);
+  OnlyScoreSettings(int n, int low, int mid, int high);
 
   // reset
   void reset();
@@ -58,6 +58,7 @@ private:
   int m_low;
   int m_mid;
   int m_high;
+  int m_n;
 
   bool m_terminal;
   reward_t m_reward;

@@ -195,7 +195,10 @@ RomSettings *buildRomRLWrapper(const std::string &rom) {
 
     //TODO: this needs to be generalized, obviously
     if (rom.find("Missile Command") != std::string::npos){
-      return new OnlyScoreSettings(0x6f, 0x71, 0x73);
+      return new OnlyScoreSettings(3, 0x6f, 0x71, 0x73);
+    } else if (rom.find("Jawbreaker")!= std::string::npos){
+      // TODO introduce multiplier (displayed Jawbreaker score is 10x what's in memory)
+      return new OnlyScoreSettings(2, 0x6c, 0x7a,0);
     }
     return NULL;
 }

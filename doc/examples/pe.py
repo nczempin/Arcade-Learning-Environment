@@ -43,7 +43,7 @@ directions = []
 previous_ram = np.zeros(ram_size, dtype=np.uint8)  # np.array(ram_size, dtype=np.uint8)
 current_ram = np.zeros(ram_size, dtype=np.uint8)
 ale.getRAM(previous_ram)
-candidates = [0x73, 0x71,  0x6f]
+candidates = [0x6c, 0x7a]
 for i in range(ram_size):
     if (previous_ram.item(i)!=0):
         #print ("ignoring: ", i)
@@ -54,7 +54,6 @@ for i in range(ram_size):
 #            candidates.append(i)
         
 
-#candidates= [0x6f,0x70,0x71, 0x6e, 0x6d]
 
 total_reward = 0
 while not ale.game_over():
@@ -74,15 +73,17 @@ while not ale.game_over():
                 if (d == None or d == 1):
                     if (cr > pr):
                         directions[i] = 1
-                        if (i in candidates):
-                            for j in candidates:
-                                ppr = previous_ram.item(j)
-                                ccr = current_ram.item(j)
-                                if (i >0 and i < 0x80):
-                                    print (hex(j), ": ", hex(ppr),"=",ppr, "->", hex(ccr),"=",ccr)
-                        #print (hex(i), ": ", hex(pr),"=",pr, "->", hex(cr),"=",cr)
+                        if (len(candidates) >0):
+                            if (i in candidates):
+                                for j in candidates:
+                                    ppr = previous_ram.item(j)
+                                    ccr = current_ram.item(j)
+                                    if (i >0 and i < 0x80):
+                                        print (hex(j), ": ", hex(ppr),"=",ppr, "->", hex(ccr),"=",ccr)
+                        else:
+                            print (hex(i), ": ", hex(pr),"=",pr, "->", hex(cr),"=",cr)
 
-#                        print("==============================")
+                        print("==============================")
                     elif (cr < pr):
                         directions[i] = -1
                 elif (d == 1):
