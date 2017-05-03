@@ -31,7 +31,9 @@
 #include "ale_interface.hpp"
 
 #include <stddef.h>
+#include <algorithm>
 #include <cassert>
+#include <cctype>
 #include <cstdio>
 #include <cstdlib>
 #include <iostream>
@@ -39,8 +41,6 @@
 #include <sstream>
 #include <stdexcept>
 #include <vector>
-#include <string>
-#include <algorithm>
 
 #include "common/ColourPalette.hpp"
 #include "common/Constants.h"
@@ -87,21 +87,34 @@ void ALEInterface::loadSettings(const string& romfile,
   //  line), if provided
   string configFile = theOSystem->settings().getString("config", false);
 
-  if (!configFile.empty())
+  if (!configFile.empty()) {
     theOSystem->settings().loadConfig(configFile.c_str());
+  }
 
   theOSystem->settings().validate();
   theOSystem->create();
 
   // Attempt to load the ROM
-  if (romfile == "" || !FilesystemNode::fileExists(romfile)) {
-    Logger::Error << "No ROM File specified or the ROM file was not found."
-        << std::endl;
+  if (romfile == "") {
+    Logger::Error << "No ROM File specified." << std::endl;
+    exit(1);
+  } else if (!FilesystemNode::fileExists(romfile)) {
+    Logger::Error << "ROM file " << romfile << " not found." << std::endl;
     exit(1);
   } else if (theOSystem->createConsole(romfile)) {
+    const Properties properties = theOSystem->console().properties();
+    const std::string name = properties.get(Cartridge_Name);
+    const std::string md5 = properties.get(Cartridge_MD5);
+    Logger::Info << "Cartridge_name: " << name << std::endl;
+    Logger::Info << "Cartridge_MD5: " << md5 << std::endl;
+    string rom_candidate = find_rom(md5);
+    if (rom_candidate == "") {
+      Logger::Warning << "Warning. Possibly unsupported ROM." << std::endl;
+    }
     Logger::Info << "Running ROM file..." << std::endl;
     theOSystem->settings().setString("rom_file", romfile);
   } else {
+    Logger::Error << "Unable to create console for " << romfile << std::endl;
     exit(1);
   }
 
@@ -131,8 +144,8 @@ ALEInterface::ALEInterface(bool display_screen) {
 ALEInterface::~ALEInterface() {
 }
 
-bool is_illegal(char c){
-   return !(std::isalnum(c) || c== '_');
+bool is_illegal(char c) {
+  return !(std::isalnum(c) || c == '_');
 }
 // Loads and initializes a game. After this call the game should be
 // ready to play. Resets the OSystem/Console/Environment/etc. This is
@@ -144,20 +157,23 @@ void ALEInterface::loadROM(string rom_file = "") {
     rom_file = theOSystem->romFile();
   }
   loadSettings(rom_file, theOSystem);
+
   RomSettings* romRlWrapper = buildRomRLWrapper(rom_file);
   if (romRlWrapper == NULL) {
     Logger::Info << "Unable to map rom '" << rom_file
         << "'. Trying alternative method..." << std::endl;
-    const Properties properties = theOSystem->console().properties();
-    const std::__cxx11::string name = properties.get(Cartridge_Name);
-    Logger::Info << "Cartridge_name: " << name << std::endl;
+
     std::string s = "Unknown";
     std::string s1 = s.substr(0, s.find("("));
-    //string rom_name[256];
-    s1.erase(std::remove_if(s1.begin(), s1.end(),is_illegal), s1.end());
-//    std::remove_copy_if(s1.begin(), s1.end() + 1, rom_name,
-//        [](char c) {return c=='!';});
+    s1.erase(std::remove_if(s1.begin(), s1.end(), is_illegal), s1.end());
     std::cout << s1 << std::endl;
+
+    const Properties properties = theOSystem->console().properties();
+    const std::string md5 = properties.get(Cartridge_MD5); //TODO there shouldn't be a need to do this twice
+    string rom_candidate = find_rom(md5);
+    if (rom_candidate != "") {
+      s1 = rom_candidate;
+    }
     Logger::Info << "Retrying with '" << s1 << "'" << std::endl;
     romRlWrapper = buildRomRLWrapper(s1);
     if (romRlWrapper == NULL) {
